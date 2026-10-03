@@ -46,9 +46,9 @@ jobs:
           test -f settings.gradle || (echo "ERROR: settings.gradle tidak berada di root setelah extract."; exit 1)
           test -f app/build.gradle || (echo "ERROR: app/build.gradle tidak ditemukan."; exit 1)
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with: gradle-version: '9.5'
           distribution: temurin
           java-version: '17'
           cache: gradle
@@ -66,5 +66,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pssab-tanjung-uncang-aab
-          path: app/build/outputs/bundle/release/app-release.aab
+          path: ild/outputs/bundle/release/app-release.aab
           if-no-files-found: error
