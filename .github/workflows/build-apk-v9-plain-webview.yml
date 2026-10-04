@@ -1,0 +1,192 @@
+name: Build PSSAB APK v9 Plain WebView
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Create Android project
+        shell: bash
+        run: |
+          set -e
+          rm -rf android-app
+          mkdir -p android-app/app/src/main/java/com/pssab/tanjunguncang
+          mkdir -p android-app/app/src/main/res/values
+          mkdir -p android-app/app/src/main/res/drawable
+
+          cat > android-app/settings.gradle <<'EOT'
+pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }
+rootProject.name='PSSAB'
+include ':app'
+EOT
+
+          cat > android-app/build.gradle <<'EOT'
+plugins {
+    id 'com.android.application' version '8.7.3' apply false
+}
+EOT
+
+          cat > android-app/gradle.properties <<'EOT'
+org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+android.useAndroidX=false
+EOT
+
+          cat > android-app/app/build.gradle <<'EOT'
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.pssab.tanjunguncang'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.pssab.tanjunguncang'
+        minSdk 23
+        targetSdk 35
+        versionCode 9
+        versionName '28.0.9'
+    }
+}
+EOT
+
+          cat > android-app/app/src/main/res/values/strings.xml <<'EOT'
+<resources>
+    <string name="app_name">PSSAB TANJUNG UNCANG</string>
+</resources>
+EOT
+
+          cat > android-app/app/src/main/res/values/styles.xml <<'EOT'
+<resources>
+    <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#777777</item>
+        <item name="android:windowActionModeOverlay">true</item>
+    </style>
+</resources>
+EOT
+
+          cat > android-app/app/src/main/AndroidManifest.xml <<'EOT'
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:allowBackup="false"
+        android:label="PSSAB TANJUNG UNCANG"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="false"
+        android:hardwareAccelerated="true">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
+EOT
+
+          cat > android-app/app/src/main/java/com/pssab/tanjunguncang/MainActivity.java <<'EOT'
+package com.pssab.tanjunguncang;
+
+import android.Manifest;
+import android.app.Activity;
+import android.os.Bundle;
+import android.webkit.PermissionRequest;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Toast;
+
+public class MainActivity extends Activity {
+    private WebView webView;
+    private static final String URL = "https://pssab-v28.chelsea12222222.workers.dev/";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        webView = new WebView(this);
+        setContentView(webView);
+
+        WebSettings s = webView.getSettings();
+        s.setJavaScriptEnabled(true);
+        s.setDomStorageEnabled(true);
+        s.setDatabaseEnabled(true);
+        s.setMediaPlaybackRequiresUserGesture(false);
+        s.setAllowFileAccess(false);
+        s.setAllowContentAccess(true);
+        s.setBuiltInZoomControls(false);
+        s.setDisplayZoomControls(false);
+        s.setSupportZoom(false);
+        s.setLoadsImagesAutomatically(true);
+        s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+
+        webView.setWebViewClient(new WebViewClient());
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onPermissionRequest(final PermissionRequest request) {
+                runOnUiThread(() -> {
+                    if (request.getResources() != null) {
+                        request.grant(request.getResources());
+                    }
+                });
+            }
+        });
+
+        if (android.os.Build.VERSION.SDK_INT >= 23 &&
+                checkSelfPermission(Manifest.permission.CAMERA) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, 1001);
+        }
+
+        webView.loadUrl(URL);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView != null && webView.canGoBack()) webView.goBack();
+        else super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (webView != null) {
+            webView.stopLoading();
+            webView.destroy();
+        }
+        super.onDestroy();
+    }
+}
+EOT
+
+          cd android-app
+          gradle wrapper --gradle-version 8.9 --distribution-type bin
+
+      - name: Build APK
+        working-directory: android-app
+        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Rename APK
+        run: cp android-app/app/build/outputs/apk/debug/app-debug.apk PSSAB-Tanjung-Uncang-v9.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PSSAB-Tanjung-Uncang-v9
+          path: PSSAB-Tanjung-Uncang-v9.apk
+          if-no-files-found: error
