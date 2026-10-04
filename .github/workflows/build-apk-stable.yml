@@ -1,0 +1,254 @@
+name: Build PSSAB APK Stable
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Create Android project
+        shell: bash
+        run: |
+          set -e
+
+          rm -rf pssab_android
+          mkdir -p pssab_android/app/src/main/java/com/pssab/tanjunguncang
+          mkdir -p pssab_android/app/src/main/res/drawable
+          mkdir -p pssab_android/app/src/main/res/mipmap-hdpi
+          mkdir -p pssab_android/app/src/main/res/mipmap-mdpi
+          mkdir -p pssab_android/app/src/main/res/mipmap-xhdpi
+          mkdir -p pssab_android/app/src/main/res/mipmap-xxhdpi
+          mkdir -p pssab_android/app/src/main/res/mipmap-xxxhdpi
+
+          cat > pssab_android/settings.gradle <<'EOF'
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+
+          rootProject.name = "PSSAB"
+          include(":app")
+          EOF
+
+          cat > pssab_android/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application' version '8.7.3' apply false
+          }
+          EOF
+
+          cat > pssab_android/gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+          android.useAndroidX=true
+          android.nonTransitiveRClass=true
+          EOF
+
+          cat > pssab_android/app/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application'
+          }
+
+          android {
+              namespace 'com.pssab.tanjunguncang'
+              compileSdk 35
+
+              defaultConfig {
+                  applicationId 'com.pssab.tanjunguncang'
+                  minSdk 23
+                  targetSdk 35
+                  versionCode 28
+                  versionName '28.0'
+              }
+
+              buildTypes {
+                  debug {
+                      minifyEnabled false
+                  }
+                  release {
+                      minifyEnabled false
+                  }
+              }
+          }
+
+          dependencies {
+              implementation 'androidx.appcompat:appcompat:1.7.0'
+              implementation 'androidx.webkit:webkit:1.12.1'
+          }
+          EOF
+
+          cat > pssab_android/app/src/main/AndroidManifest.xml <<'EOF'
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <uses-permission android:name="android.permission.INTERNET" />
+              <uses-permission android:name="android.permission.CAMERA" />
+
+              <application
+                  android:allowBackup="false"
+                  android:hardwareAccelerated="true"
+                  android:label="PSSAB Tanjung Uncang"
+                  android:theme="@style/AppTheme"
+                  android:usesCleartextTraffic="false">
+
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true"
+                      android:screenOrientation="portrait">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+          mkdir -p pssab_android/app/src/main/res/values
+          cat > pssab_android/app/src/main/res/values/styles.xml <<'EOF'
+          <resources>
+              <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+                  <item name="android:fontFamily">sans</item>
+                  <item name="android:windowActionModeOverlay">true</item>
+                  <item name="android:colorAccent">#1565C0</item>
+                  <item name="android:statusBarColor">#1565C0</item>
+                  <item name="android:navigationBarColor">#000000</item>
+              </style>
+          </resources>
+          EOF
+
+          cat > pssab_android/app/src/main/java/com/pssab/tanjunguncang/MainActivity.java <<'EOF'
+          package com.pssab.tanjunguncang;
+
+          import android.Manifest;
+          import android.app.Activity;
+          import android.content.pm.PackageManager;
+          import android.os.Bundle;
+          import android.webkit.PermissionRequest;
+          import android.webkit.WebChromeClient;
+          import android.webkit.WebResourceRequest;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+
+          import androidx.annotation.Nullable;
+          import androidx.appcompat.app.AppCompatActivity;
+          import androidx.core.app.ActivityCompat;
+          import androidx.core.content.ContextCompat;
+          import androidx.webkit.WebSettingsCompat;
+          import androidx.webkit.WebViewFeature;
+
+          public class MainActivity extends AppCompatActivity {
+              private static final int CAMERA_REQUEST = 1001;
+              private WebView webView;
+              private PermissionRequest pendingPermissionRequest;
+
+              @Override
+              protected void onCreate(@Nullable Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+
+                  webView = new WebView(this);
+                  setContentView(webView);
+
+                  android.webkit.WebSettings settings = webView.getSettings();
+                  settings.setJavaScriptEnabled(true);
+                  settings.setDomStorageEnabled(true);
+                  settings.setDatabaseEnabled(true);
+                  settings.setMediaPlaybackRequiresUserGesture(false);
+                  settings.setAllowFileAccess(true);
+                  settings.setAllowContentAccess(true);
+                  settings.setSupportZoom(false);
+                  settings.setBuiltInZoomControls(false);
+                  settings.setDisplayZoomControls(false);
+
+                  if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+                      WebSettingsCompat.setForceDark(settings, WebSettingsCompat.FORCE_DARK_OFF);
+                  }
+
+                  webView.setWebViewClient(new WebViewClient() {
+                      @Override
+                      public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                          return false;
+                      }
+                  });
+
+                  webView.setWebChromeClient(new WebChromeClient() {
+                      @Override
+                      public void onPermissionRequest(final PermissionRequest request) {
+                          runOnUiThread(() -> {
+                              pendingPermissionRequest = request;
+                              if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
+                                      == PackageManager.PERMISSION_GRANTED) {
+                                  request.grant(new String[]{PermissionRequest.RESOURCE_VIDEO_CAPTURE});
+                              } else {
+                                  ActivityCompat.requestPermissions(
+                                          MainActivity.this,
+                                          new String[]{Manifest.permission.CAMERA},
+                                          CAMERA_REQUEST
+                                  );
+                              }
+                          });
+                      }
+                  });
+
+                  webView.loadUrl("https://pssab-v28.chelsea12222222.workers.dev/");
+              }
+
+              @Override
+              public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+                  super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                  if (requestCode == CAMERA_REQUEST && pendingPermissionRequest != null) {
+                      if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                          pendingPermissionRequest.grant(new String[]{PermissionRequest.RESOURCE_VIDEO_CAPTURE});
+                      } else {
+                          pendingPermissionRequest.deny();
+                      }
+                      pendingPermissionRequest = null;
+                  }
+              }
+
+              @Override
+              public void onBackPressed() {
+                  if (webView != null && webView.canGoBack()) {
+                      webView.goBack();
+                  } else {
+                      super.onBackPressed();
+                  }
+              }
+          }
+          EOF
+
+          cd pssab_android
+          gradle wrapper --gradle-version 8.9
+          ./gradlew :app:assembleDebug --no-daemon
+
+      - name: Upload stable APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: pssab-tanjung-uncang-apk-stable
+          path: pssab_android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
