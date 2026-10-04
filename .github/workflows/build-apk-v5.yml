@@ -1,0 +1,93 @@
+name: Build PSSAB Android APK v5
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Find Android project ZIP
+        shell: bash
+        run: |
+          ZIP=$(find . -maxdepth 2 -type f -iname "*.zip" | head -n 1)
+          if [ -z "$ZIP" ]; then
+            echo "ERROR: File ZIP proyek Android belum ditemukan di repository."
+            exit 1
+          fi
+          echo "PROJECT_ZIP=$ZIP" >> "$GITHUB_ENV"
+          echo "ZIP ditemukan: $ZIP"
+
+      - name: Extract Android project
+        shell: bash
+        run: |
+          rm -rf android_project
+          mkdir -p android_project
+          unzip -q "$PROJECT_ZIP" -d android_project
+          PROJECT_DIR=$(find android_project -type f \( -name "settings.gradle" -o -name "settings.gradle.kts" \) -print -quit | xargs -r dirname)
+          if [ -z "$PROJECT_DIR" ]; then
+            echo "ERROR: settings.gradle/settings.gradle.kts tidak ditemukan."
+            exit 1
+          fi
+          shopt -s dotglob
+          cp -a "$PROJECT_DIR"/. ./
+          test -f settings.gradle || test -f settings.gradle.kts
+          test -f app/build.gradle || test -f app/build.gradle.kts
+
+      - name: Set application name
+        shell: bash
+        run: |
+          STRINGS=$(find app/src/main/res -type f -path "*/values/strings.xml" -print -quit 2>/dev/null || true)
+          if [ -n "$STRINGS" ]; then
+            if grep -q 'name="app_name"' "$STRINGS"; then
+              sed -i -E 's#<string name="app_name"[^>]*>.*</string>#<string name="app_name">PSSAB Tanjung Uncang</string>#' "$STRINGS"
+            else
+              sed -i '/</resources>/i\    <string name="app_name">PSSAB Tanjung Uncang</string>' "$STRINGS"
+            fi
+          else
+            mkdir -p app/src/main/res/values
+            printf '%s\n' '<resources>' '    <string name="app_name">PSSAB Tanjung Uncang</string>' '</resources>' > app/src/main/res/values/strings.xml
+          fi
+          MANIFEST="app/src/main/AndroidManifest.xml"
+          if [ -f "$MANIFEST" ]; then
+            sed -i -E 's/android:label="[^"]*"/android:label="@string\/app_name"/' "$MANIFEST"
+          fi
+          echo "Nama aplikasi: PSSAB Tanjung Uncang"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: "9.5.1"
+
+      - name: Build Android APK
+        run: gradle :app:assembleDebug --no-daemon
+
+      - name: Rename APK
+        shell: bash
+        run: |
+          APK=$(find app/build/outputs/apk/debug -maxdepth 1 -type f -name "*.apk" | head -n 1)
+          if [ -z "$APK" ]; then
+            echo "ERROR: APK tidak ditemukan."
+            exit 1
+          fi
+          cp "$APK" "app/build/outputs/apk/debug/PSSAB-Tanjung-Uncang.apk"
+          ls -lh app/build/outputs/apk/debug/PSSAB-Tanjung-Uncang.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pssab-tanjung-uncang-apk-v5
+          path: app/build/outputs/apk/debug/PSSAB-Tanjung-Uncang.apk
+          if-no-files-found: error
