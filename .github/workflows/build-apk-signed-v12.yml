@@ -1,0 +1,140 @@
+name: Build PSSAB APK Signed v12
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Create Android project
+        shell: bash
+        run: |
+          set -e
+          mkdir -p app/src/main/java/com/pssab/tanjunguncang app/src/main/res/values
+          cat > settings.gradle <<'EOF'
+          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+          dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }
+          rootProject.name = "PSSAB"
+          include(":app")
+          EOF
+          cat > build.gradle <<'EOF'
+          plugins { id 'com.android.application' version '8.7.3' apply false }
+          EOF
+          cat > gradle.properties <<'EOF'
+          android.useAndroidX=true
+          org.gradle.jvmargs=-Xmx2048m
+          EOF
+          cat > app/build.gradle <<'EOF'
+          plugins { id 'com.android.application' }
+          android {
+            namespace 'com.pssab.tanjunguncang'
+            compileSdk 35
+            defaultConfig {
+              applicationId 'com.pssab.tanjunguncang'
+              minSdk 23
+              targetSdk 35
+              versionCode 12
+              versionName '28.0.12'
+            }
+            signingConfigs {
+              release {
+                storeFile file("${rootProject.projectDir}/PSSAB-release-v3.jks")
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD")
+              }
+            }
+            buildTypes {
+              release { minifyEnabled false; signingConfig signingConfigs.release }
+            }
+          }
+          dependencies {
+            implementation 'androidx.appcompat:appcompat:1.7.0'
+            implementation 'androidx.webkit:webkit:1.12.1'
+          }
+          EOF
+          cat > app/src/main/res/values/styles.xml <<'EOF'
+          <resources><style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"/></resources>
+          EOF
+          cat > app/src/main/AndroidManifest.xml <<'EOF'
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+            <uses-permission android:name="android.permission.INTERNET"/>
+            <uses-permission android:name="android.permission.CAMERA"/>
+            <application android:theme="@style/AppTheme" android:label="PSSAB TANJUNG UNCANG" android:hardwareAccelerated="true" android:allowBackup="false">
+              <activity android:name=".MainActivity" android:screenOrientation="portrait" android:exported="true">
+                <intent-filter>
+                  <action android:name="android.intent.action.MAIN"/>
+                  <category android:name="android.intent.category.LAUNCHER"/>
+                </intent-filter>
+              </activity>
+            </application>
+          </manifest>
+          EOF
+          cat > app/src/main/java/com/pssab/tanjunguncang/MainActivity.java <<'EOF'
+          package com.pssab.tanjunguncang;
+          import android.Manifest;
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.webkit.*;
+          import androidx.core.app.ActivityCompat;
+          import androidx.core.content.ContextCompat;
+          public class MainActivity extends Activity {
+            WebView w;
+            public void onCreate(Bundle b) {
+              super.onCreate(b); w=new WebView(this); setContentView(w);
+              WebSettings s=w.getSettings(); s.setJavaScriptEnabled(true); s.setDomStorageEnabled(true); s.setDatabaseEnabled(true);
+              s.setMediaPlaybackRequiresUserGesture(false); s.setAllowFileAccess(true); s.setAllowContentAccess(true);
+              w.setWebViewClient(new WebViewClient());
+              w.setWebChromeClient(new WebChromeClient(){
+                public void onPermissionRequest(final PermissionRequest r){
+                  runOnUiThread(() -> {
+                    if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.CAMERA)!=0)
+                      ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.CAMERA},1001);
+                    else r.grant(r.getResources());
+                  });
+                }
+              });
+              w.loadUrl("https://pssab-v28.chelsea12222222.workers.dev/");
+            }
+            public void onBackPressed(){ if(w.canGoBack()) w.goBack(); else super.onBackPressed(); }
+          }
+          EOF
+      - name: Create Gradle wrapper
+        run: gradle wrapper --gradle-version 8.9
+      - name: Restore signing keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          set -e
+          test -n "$KEYSTORE_BASE64"
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > PSSAB-release-v3.jks
+          test -s PSSAB-release-v3.jks
+          chmod 600 PSSAB-release-v3.jks
+      - name: Build signed release APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          test -n "$KEYSTORE_PASSWORD"
+          test -n "$KEY_ALIAS"
+          test -n "$KEY_PASSWORD"
+          ./gradlew :app:assembleRelease
+      - name: Copy final APK
+        run: cp app/build/outputs/apk/release/app-release.apk PSSAB-Tanjung-Uncang-v12-SIGNED.apk
+      - name: Upload signed APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: PSSAB-Tanjung-Uncang-v12-SIGNED
+          path: PSSAB-Tanjung-Uncang-v12-SIGNED.apk
+          if-no-files-found: error
