@@ -8,16 +8,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
@@ -29,24 +30,22 @@ jobs:
           mkdir -p app/src/main/java/com/pssab/tanjunguncang
           mkdir -p app/src/main/res/values
           mkdir -p app/src/main/res/drawable
-          mkdir -p app/src/main/res/mipmap-anydpi-v26
-          mkdir -p app/src/main/res/mipmap
 
           cat > settings.gradle <<'EOF'
           pluginManagement {
-            repositories {
-              google()
-              mavenCentral()
-              gradlePluginPortal()
-            }
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
           }
 
           dependencyResolutionManagement {
-            repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-            repositories {
-              google()
-              mavenCentral()
-            }
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
           }
 
           rootProject.name = 'PSSAB'
@@ -55,7 +54,7 @@ jobs:
 
           cat > build.gradle <<'EOF'
           plugins {
-            id 'com.android.application' version '8.7.3' apply false
+              id 'com.android.application' version '8.7.3' apply false
           }
           EOF
 
@@ -67,107 +66,52 @@ jobs:
 
           cat > app/build.gradle <<'EOF'
           plugins {
-            id 'com.android.application'
+              id 'com.android.application'
           }
 
           android {
-            namespace 'com.pssab.tanjunguncang'
-            compileSdk 35
+              namespace 'com.pssab.tanjunguncang'
+              compileSdk 35
 
-            defaultConfig {
-              applicationId 'com.pssab.tanjunguncang'
-              minSdk 23
-              targetSdk 35
-              versionCode 14
-              versionName '28.0.14'
-            }
-
-            signingConfigs {
-              release {
-                storeFile file("$rootDir/keystore/PSSAB-release-v3.jks")
-                storePassword System.getenv('KEYSTORE_PASSWORD')
-                keyAlias 'pssab'
-                keyPassword System.getenv('KEYSTORE_PASSWORD')
+              defaultConfig {
+                  applicationId 'com.pssab.tanjunguncang'
+                  minSdk 23
+                  targetSdk 35
+                  versionCode 14
+                  versionName '28.0.14'
               }
-            }
 
-            buildTypes {
-              release {
-                minifyEnabled false
-                signingConfig signingConfigs.release
+              signingConfigs {
+                  release {
+                      storeFile file("$rootProject.projectDir/keystore/PSSAB-release-v3.jks")
+                      storePassword System.getenv('KEYSTORE_PASSWORD')
+                      keyAlias 'pssab'
+                      keyPassword System.getenv('KEYSTORE_PASSWORD')
+                  }
               }
-            }
-          }
 
-          dependencies {
-           implementation 'androidx.appcompat:appcompat:1.7.0'
-           implementation 'androidx.webkit:webkit:1.12.1'
-
-           implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.22')
+              buildTypes {
+                  release {
+                      minifyEnabled false
+                      signingConfig signingConfigs.release
+                  }
+              }
           }
           EOF
 
           cat > app/src/main/res/values/strings.xml <<'EOF'
           <resources>
-            <string name="app_name">PSSAB Tanjung Uncang</string>
+              <string name="app_name">PSSAB Tanjung Uncang</string>
           </resources>
-          EOF
-
-          cat > app/src/main/res/values/colors.xml <<'EOF'
-          <resources>
-            <color name="pssab_green">#72D6A1</color>
-          </resources>
-          EOF
-
-          # Gunakan logo PSSAB asli dari repository
-           cp "Logo PSSAB.png" app/src/main/res/drawable/pssab_logo.png
-
-          cat > app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml <<'EOF'
-          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-          <background android:drawable="@color/pssab_green"/>
-          <foreground android:drawable="@drawable/pssab_logo"/>
-          </adaptive-icon>
-            EOF
-
-          cp "Logo PSSAB.png" app/src/main/res/mipmap/ic_launcher.png
-
-          cat > app/src/main/AndroidManifest.xml <<'EOF'
-          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-            <uses-permission android:name="android.permission.INTERNET"/>
-            <uses-permission android:name="android.permission.CAMERA"/>
-            <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-
-            <application
-                android:theme="@style/AppTheme"
-                android:label="@string/app_name"
-                android:icon="@mipmap/ic_launcher"
-                android:roundIcon="@mipmap/ic_launcher"
-                android:usesCleartextTraffic="false"
-                android:hardwareAccelerated="true">
-
-              <activity
-                  android:name=".MainActivity"
-                  android:screenOrientation="portrait"
-                  android:exported="true">
-
-                <intent-filter>
-                  <action android:name="android.intent.action.MAIN"/>
-                  <category android:name="android.intent.category.LAUNCHER"/>
-                </intent-filter>
-
-              </activity>
-            </application>
-          </manifest>
           EOF
 
           cat > app/src/main/res/values/styles.xml <<'EOF'
           <resources>
-            <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
-              <item name="android:fontFamily">sans</item>
-              <item name="android:windowActionModeOverlay">true</item>
-              <item name="android:colorAccent">#72D6A1</item>
-            </style>
+              <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+                  <item name="android:fontFamily">sans</item>
+                  <item name="android:windowActionModeOverlay">true</item>
+                  <item name="android:colorAccent">#72D6A1</item>
+              </style>
           </resources>
           EOF
 
@@ -186,87 +130,125 @@ jobs:
 
           public class MainActivity extends Activity {
 
-            private WebView webView;
-            private static final int CAMERA_REQ = 1001;
+              private WebView webView;
+              private static final int CAMERA_REQ = 1001;
 
-            @Override
-            protected void onCreate(Bundle b) {
-              super.onCreate(b);
+              @Override
+              protected void onCreate(Bundle b) {
+                  super.onCreate(b);
 
-              webView = new WebView(this);
-              setContentView(webView);
+                  webView = new WebView(this);
+                  setContentView(webView);
 
-              WebSettings s = webView.getSettings();
-              s.setJavaScriptEnabled(true);
-              s.setDomStorageEnabled(true);
-              s.setMediaPlaybackRequiresUserGesture(false);
-              s.setAllowFileAccess(true);
-              s.setAllowContentAccess(true);
+                  WebSettings s = webView.getSettings();
+                  s.setJavaScriptEnabled(true);
+                  s.setDomStorageEnabled(true);
+                  s.setMediaPlaybackRequiresUserGesture(false);
+                  s.setAllowFileAccess(true);
+                  s.setAllowContentAccess(true);
 
-              webView.setWebViewClient(new WebViewClient());
+                  webView.setWebViewClient(new WebViewClient());
 
-              webView.setWebChromeClient(new WebChromeClient() {
-                @Override
-                public void onPermissionRequest(final PermissionRequest r) {
-                  runOnUiThread(() -> {
-                    if (checkSelfPermission(Manifest.permission.CAMERA)
-                        != PackageManager.PERMISSION_GRANTED) {
+                  webView.setWebChromeClient(new WebChromeClient() {
+                      @Override
+                      public void onPermissionRequest(final PermissionRequest r) {
+                          runOnUiThread(() -> {
+                              if (checkSelfPermission(Manifest.permission.CAMERA)
+                                      != PackageManager.PERMISSION_GRANTED) {
+                                  requestPermissions(
+                                      new String[]{Manifest.permission.CAMERA},
+                                      CAMERA_REQ
+                                  );
+                              } else {
+                                  r.grant(r.getResources());
+                              }
+                          });
+                      }
+                  });
 
+                  if (checkSelfPermission(Manifest.permission.CAMERA)
+                          != PackageManager.PERMISSION_GRANTED) {
                       requestPermissions(
                           new String[]{Manifest.permission.CAMERA},
-                          CAMERA_REQ);
+                          CAMERA_REQ
+                      );
+                  }
 
-                    } else {
-                      r.grant(r.getResources());
-                    }
-                  });
-                }
-              });
-
-              if (checkSelfPermission(Manifest.permission.CAMERA)
-                  != PackageManager.PERMISSION_GRANTED) {
-
-                requestPermissions(
-                    new String[]{Manifest.permission.CAMERA},
-                    CAMERA_REQ);
+                  webView.loadUrl(
+                      "https://pssab-v28.chelsea12222222.workers.dev"
+                  );
               }
 
-              webView.loadUrl(
-                  "https://pssab-v28.chelsea12222222.workers.dev");
-            }
-
-            @Override
-            public void onBackPressed() {
-              if (webView != null && webView.canGoBack()) {
-                webView.goBack();
-              } else {
-                super.onBackPressed();
+              @Override
+              public void onBackPressed() {
+                  if (webView != null && webView.canGoBack()) {
+                      webView.goBack();
+                  } else {
+                      super.onBackPressed();
+                  }
               }
-            }
           }
           EOF
 
-      - name: Recover original PSSAB logo
+      - name: Create AndroidManifest
         shell: bash
         run: |
           set -e
 
-          OLD="$(git show HEAD^:.github/workflows/build-apk-signed-v14.yml 2>/dev/null || true)"
+          mkdir -p app/src/main
 
-          B64="$(printf '%s\n' "$OLD" | \
-            sed -n "/echo 'iVBORw0KGgo/ {
-              s/.*echo '\\([^']*\\)'.*/\\1/p
-            }")"
+          printf '%s\n' \
+          '<manifest xmlns:android="http://schemas.android.com/apk/res/android">' \
+          '    <uses-permission android:name="android.permission.INTERNET"/>' \
+          '    <uses-permission android:name="android.permission.CAMERA"/>' \
+          '    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>' \
+          '' \
+          '    <application' \
+          '        android:theme="@style/AppTheme"' \
+          '        android:label="@string/app_name"' \
+          '        android:icon="@drawable/pssab_logo"' \
+          '        android:roundIcon="@drawable/pssab_logo"' \
+          '        android:usesCleartextTraffic="false"' \
+          '        android:hardwareAccelerated="true">' \
+          '' \
+          '        <activity' \
+          '            android:name=".MainActivity"' \
+          '            android:screenOrientation="portrait"' \
+          '            android:exported="true">' \
+          '' \
+          '            <intent-filter>' \
+          '                <action android:name="android.intent.action.MAIN"/>' \
+          '                <category android:name="android.intent.category.LAUNCHER"/>' \
+          '            </intent-filter>' \
+          '' \
+          '        </activity>' \
+          '' \
+          '    </application>' \
+          '</manifest>' \
+          > app/src/main/AndroidManifest.xml
 
-          if [ -n "$B64" ]; then
-            rm -f app/src/main/res/drawable/pssab_logo.xml
-            printf '%s' "$B64" | base64 -d \
-              > app/src/main/res/drawable/pssab_logo.png
+          test -f app/src/main/AndroidManifest.xml
+          echo "AndroidManifest.xml berhasil dibuat."
 
-            echo "Logo PSSAB lama berhasil dipulihkan."
-          else
-            echo "Logo lama tidak ditemukan; memakai logo cadangan."
+      - name: Prepare PSSAB logo
+        shell: bash
+        run: |
+          set -e
+
+          LOGO="Logo PSSAB.png"
+
+          if [ ! -f "$LOGO" ]; then
+              echo "ERROR: Logo PSSAB.png tidak ditemukan di repository."
+              echo "File yang tersedia:"
+              find . -maxdepth 2 -type f | head -50
+              exit 1
           fi
+
+          cp "$LOGO" app/src/main/res/drawable/pssab_logo.png
+
+          test -s app/src/main/res/drawable/pssab_logo.png
+
+          echo "Logo PSSAB asli berhasil dipasang."
 
       - name: Prepare signing key
         shell: bash
@@ -286,6 +268,24 @@ jobs:
 
           test -s keystore/PSSAB-release-v3.jks
 
+          echo "Signing key siap."
+
+      - name: Verify project files
+        shell: bash
+        run: |
+          set -e
+
+          echo "Memeriksa file Android..."
+
+          test -f app/src/main/AndroidManifest.xml
+          test -f app/src/main/java/com/pssab/tanjunguncang/MainActivity.java
+          test -f app/src/main/res/values/strings.xml
+          test -f app/src/main/res/values/styles.xml
+          test -f app/src/main/res/drawable/pssab_logo.png
+          test -f keystore/PSSAB-release-v3.jks
+
+          echo "Semua file utama tersedia."
+
       - name: Build signed APK v14
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -293,7 +293,10 @@ jobs:
           gradle :app:assembleRelease --no-daemon
 
       - name: Verify APK
+        shell: bash
         run: |
+          set -e
+
           APK="app/build/outputs/apk/release/app-release.apk"
 
           test -f "$APK"
@@ -304,14 +307,30 @@ jobs:
             -type d | sort -V | tail -1)
 
           "$BUILD_TOOLS/apksigner" verify \
-            --verbose "$APK"
+            --verbose \
+            "$APK"
 
           "$BUILD_TOOLS/apksigner" verify \
-            --print-certs "$APK"
+            --print-certs \
+            "$APK"
+
+          echo "APK berhasil dibuat dan tanda tangan berhasil diverifikasi."
+
+      - name: Rename APK
+        shell: bash
+        run: |
+          set -e
+
+          mv \
+            app/build/outputs/apk/release/app-release.apk \
+            app/build/outputs/apk/release/PSSAB-Tanjung-Uncang-v14-SIGNED.apk
+
+          test -f \
+            app/build/outputs/apk/release/PSSAB-Tanjung-Uncang-v14-SIGNED.apk
 
       - name: Upload PSSAB APK v14
         uses: actions/upload-artifact@v4
         with:
           name: PSSAB-Tanjung-Uncang-v14-SIGNED
-          path: app/build/outputs/apk/release/app-release.apk
+          path: app/build/outputs/apk/release/PSSAB-Tanjung-Uncang-v14-SIGNED.apk
           if-no-files-found: error
