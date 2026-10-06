@@ -1,4 +1,4 @@
-name: Build PSSAB APK Signed v15
+name: Build PSSAB APK Signed v16
 
 on:
   workflow_dispatch:
@@ -34,7 +34,7 @@ jobs:
           mkdir -p app/src/main/res/values
           mkdir -p app/src/main/res/drawable
           mkdir -p app/src/main/res/mipmap-anydpi-v26
-          mkdir -p app/src/main/res/mipmap-anydpi
+          mkdir -p app/src/main/res/mipmap
 
           cat > settings.gradle <<'EOF'
           pluginManagement {
@@ -74,8 +74,8 @@ jobs:
                   applicationId 'com.pssab.tanjunguncang'
                   minSdk 23
                   targetSdk 35
-                  versionCode 15
-                  versionName '28.0.15'
+                  versionCode 16
+                  versionName '28.0.16'
               }
 
               signingConfigs {
@@ -104,7 +104,7 @@ jobs:
 
           cat > app/src/main/res/values/colors.xml <<'EOF'
           <resources>
-              <color name="pssab_background">#571313</color>
+              <color name="pssab_background">#24100D</color>
           </resources>
           EOF
 
@@ -114,9 +114,8 @@ jobs:
                   <item name="android:fontFamily">sans</item>
                   <item name="android:windowActionModeOverlay">true</item>
                   <item name="android:colorAccent">#9E0B12</item>
-                  <item name="android:navigationBarColor">#000000</item>
-                  <item name="android:statusBarColor">#571313</item>
                   <item name="android:windowLightStatusBar">false</item>
+                  <item name="android:statusBarColor">#24100D</item>
               </style>
           </resources>
           EOF
@@ -136,8 +135,8 @@ jobs:
 
           public class MainActivity extends Activity {
 
-              private static final int CAMERA_REQUEST = 1001;
               private WebView webView;
+              private static final int CAMERA_PERMISSION = 1001;
 
               @Override
               protected void onCreate(Bundle savedInstanceState) {
@@ -154,8 +153,7 @@ jobs:
                   settings.setMediaPlaybackRequiresUserGesture(false);
                   settings.setAllowFileAccess(true);
                   settings.setAllowContentAccess(true);
-                  settings.setBuiltInZoomControls(false);
-                  settings.setDisplayZoomControls(false);
+                  settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
                   webView.setWebViewClient(new WebViewClient());
 
@@ -175,7 +173,7 @@ jobs:
                           != PackageManager.PERMISSION_GRANTED) {
                       requestPermissions(
                               new String[]{Manifest.permission.CAMERA},
-                              CAMERA_REQUEST
+                              CAMERA_PERMISSION
                       );
                   }
 
@@ -186,7 +184,7 @@ jobs:
 
               @Override
               public void onBackPressed() {
-                  if (webView != null && webView.canGoBack()) {
+                  if (webView.canGoBack()) {
                       webView.goBack();
                   } else {
                       super.onBackPressed();
@@ -195,38 +193,39 @@ jobs:
           }
           EOF
 
-      - name: Create Android manifest
+      - name: Create AndroidManifest
         shell: bash
         run: |
           set -e
 
           printf '%s\n' \
-            '<manifest xmlns:android="http://schemas.android.com/apk/res/android">' \
-            '    <uses-permission android:name="android.permission.INTERNET"/>' \
-            '    <uses-permission android:name="android.permission.CAMERA"/>' \
-            '    <application' \
-            '        android:theme="@style/AppTheme"' \
-            '        android:label="@string/app_name"' \
-            '        android:icon="@mipmap/ic_launcher"' \
-            '        android:roundIcon="@mipmap/ic_launcher"' \
-            '        android:usesCleartextTraffic="false"' \
-            '        android:hardwareAccelerated="true">' \
-            '        <activity' \
-            '            android:name=".MainActivity"' \
-            '            android:screenOrientation="portrait"' \
-            '            android:exported="true">' \
-            '            <intent-filter>' \
-            '                <action android:name="android.intent.action.MAIN"/>' \
-            '                <category android:name="android.intent.category.LAUNCHER"/>' \
-            '            </intent-filter>' \
-            '        </activity>' \
-            '    </application>' \
-            '</manifest>' \
-            > app/src/main/AndroidManifest.xml
+          '<?xml version="1.0" encoding="utf-8"?>' \
+          '<manifest xmlns:android="http://schemas.android.com/apk/res/android">' \
+          '    <uses-permission android:name="android.permission.INTERNET"/>' \
+          '    <uses-permission android:name="android.permission.CAMERA"/>' \
+          '    <application' \
+          '        android:theme="@style/AppTheme"' \
+          '        android:label="@string/app_name"' \
+          '        android:icon="@mipmap/ic_launcher"' \
+          '        android:roundIcon="@mipmap/ic_launcher"' \
+          '        android:usesCleartextTraffic="false"' \
+          '        android:hardwareAccelerated="true">' \
+          '        <activity' \
+          '            android:name=".MainActivity"' \
+          '            android:screenOrientation="portrait"' \
+          '            android:exported="true">' \
+          '            <intent-filter>' \
+          '                <action android:name="android.intent.action.MAIN"/>' \
+          '                <category android:name="android.intent.category.LAUNCHER"/>' \
+          '            </intent-filter>' \
+          '        </activity>' \
+          '    </application>' \
+          '</manifest>' \
+          > app/src/main/AndroidManifest.xml
 
           test -s app/src/main/AndroidManifest.xml
 
-      - name: Add original PSSAB logo
+      - name: Prepare PSSAB logo
         shell: bash
         run: |
           set -e
@@ -236,7 +235,7 @@ jobs:
             -print -quit)"
 
           if [ -z "$LOGO" ]; then
-            echo "ERROR: Logo PSSAB.png tidak ditemukan."
+            echo "ERROR: Logo PSSAB tidak ditemukan."
             exit 1
           fi
 
@@ -244,24 +243,36 @@ jobs:
 
           test -s app/src/main/res/drawable/pssab_logo.png
 
-      - name: Create adaptive launcher icon
+          echo "Logo ditemukan:"
+          echo "$LOGO"
+
+      - name: Create large adaptive launcher icon
         shell: bash
         run: |
           set -e
 
-          cat > app/src/main/res/values/launcher_colors.xml <<'EOF'
-          <resources>
-              <color name="launcher_background">#571313</color>
-          </resources>
+          mkdir -p app/src/main/res/drawable
+          mkdir -p app/src/main/res/mipmap-anydpi-v26
+          mkdir -p app/src/main/res/mipmap
+
+          cp app/src/main/res/drawable/pssab_logo.png \
+             app/src/main/res/mipmap/ic_launcher.png
+
+          cat > app/src/main/res/drawable/ic_launcher_background.xml <<'EOF'
+          <shape xmlns:android="http://schemas.android.com/apk/res/android"
+              android:shape="rectangle">
+              <solid android:color="#24100D"/>
+          </shape>
           EOF
 
           cat > app/src/main/res/drawable/ic_launcher_foreground.xml <<'EOF'
           <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
               <item
-                  android:width="108dp"
-                  android:height="108dp"
-                  android:gravity="center">
+                  android:left="-18dp"
+                  android:top="-18dp"
+                  android:right="-18dp"
+                  android:bottom="-18dp">
 
                   <bitmap
                       android:src="@drawable/pssab_logo"
@@ -274,23 +285,12 @@ jobs:
 
           cat > app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml <<'EOF'
           <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-              <background android:drawable="@color/launcher_background"/>
+              <background android:drawable="@drawable/ic_launcher_background"/>
               <foreground android:drawable="@drawable/ic_launcher_foreground"/>
           </adaptive-icon>
           EOF
 
-          cat > app/src/main/res/mipmap-anydpi/ic_launcher.xml <<'EOF'
-          <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-
-              <item
-                  android:drawable="@drawable/pssab_logo"
-                  android:gravity="fill" />
-
-          </layer-list>
-          EOF
-
-          test -s app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
-          test -s app/src/main/res/mipmap-anydpi/ic_launcher.xml
+          echo "Adaptive icon PSSAB berhasil dibuat."
 
       - name: Prepare signing key
         shell: bash
@@ -318,12 +318,13 @@ jobs:
           test -s app/src/main/AndroidManifest.xml
           test -s app/src/main/java/com/pssab/tanjunguncang/MainActivity.java
           test -s app/src/main/res/drawable/pssab_logo.png
+          test -s app/src/main/res/mipmap/ic_launcher.png
           test -s app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
-          test -s app/src/main/res/mipmap-anydpi/ic_launcher.xml
 
           echo "Semua file proyek tersedia."
 
-      - name: Build signed APK v15
+      - name: Build signed APK v16
+        shell: bash
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
@@ -332,6 +333,7 @@ jobs:
           gradle :app:assembleRelease --no-daemon
 
       - name: Verify APK
+        shell: bash
         run: |
           set -e
 
@@ -348,11 +350,17 @@ jobs:
 
           "$BUILD_TOOLS/apksigner" verify --print-certs "$APK"
 
-          ls -lh "$APK"
+      - name: Rename APK
+        shell: bash
+        run: |
+          set -e
 
-      - name: Upload PSSAB APK v15
+          cp app/build/outputs/apk/release/app-release.apk \
+             app/build/outputs/apk/release/PSSAB-Tanjung-Uncang-v16.apk
+
+      - name: Upload PSSAB APK v16
         uses: actions/upload-artifact@v4
         with:
-          name: PSSAB-Tanjung-Uncang-v15-SIGNED
-          path: app/build/outputs/apk/release/app-release.apk
+          name: PSSAB-Tanjung-Uncang-v16-SIGNED
+          path: app/build/outputs/apk/release/PSSAB-Tanjung-Uncang-v16.apk
           if-no-files-found: error
