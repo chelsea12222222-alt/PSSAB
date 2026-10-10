@@ -1,1 +1,127 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSSAB Tanjung Uncang — v29</title>
+<style>
+:root{--red:#710d1c;--dark:#380811;--gold:#d99a13;--cream:#fffaf0;--ink:#252a35}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:var(--ink);line-height:1.55}
+header{background:linear-gradient(110deg,var(--dark),var(--red));color:white;padding:14px max(5%,calc((100% - 1200px)/2));display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:58px;height:58px;border:3px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:#ffd66d;font-weight:bold;font-size:14px;background:#510916}
+.brand strong{font-family:Georgia,serif;font-size:27px;line-height:1.1}
+.brand small{display:block;font-size:12px}
+nav{display:flex;gap:7px;flex-wrap:wrap}
+button,.navbtn{border:0;border-radius:22px;padding:10px 15px;font-weight:bold;cursor:pointer}
+.navbtn{background:transparent;color:white}
+.gold{background:var(--gold);color:#31100b}
+.red{background:var(--red);color:white}
+.hero{padding:50px 6%;background:linear-gradient(120deg,#fff6dd,#fff 55%,#f8e5c0);text-align:center;border-bottom:5px solid var(--gold)}
+.hero .logo{width:100px;height:100px;margin:0 auto 12px;font-size:23px;border-width:5px}
+h1{font: bold clamp(38px,7vw,68px) Georgia,serif;color:var(--red);margin:8px 0}
+.hero p{font-size:18px;margin:4px}
+.motto{font:italic bold 23px Georgia,serif;color:var(--red);margin-top:20px}
+main{max-width:1200px;margin:auto;padding:22px 18px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.tile{border:1px solid #e1e1e1;border-radius:14px;padding:20px 12px;text-align:center;background:white;box-shadow:0 3px 12px #25030a0a}
+.symbol{width:54px;height:54px;margin:auto auto 8px;border-radius:50%;display:grid;place-items:center;background:var(--red);color:white;font-size:25px}
+.tile:nth-child(even) .symbol{background:var(--gold);color:#321}
+.tile h3{margin:5px 0}
+.tile p{margin:4px 0 12px;font-size:14px;color:#566171}
+.sectiongrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+.panel{border:1px solid #e0e0e0;border-radius:14px;overflow:hidden;margin-bottom:14px}
+.panel h2{margin:0;padding:13px 17px;background:var(--red);color:white;font-size:19px}
+.panelbody{padding:18px}
+.panelbody h2{background:none;color:var(--red);padding:0}
+ul{padding-left:20px}
+li{margin:8px 0}
+.banner{background:linear-gradient(120deg,var(--dark),var(--red));color:white;padding:22px;border-radius:12px;text-align:center;margin-top:16px}
+footer{margin-top:25px;background:var(--dark);color:white;text-align:center;padding:25px 12px;border-bottom:8px solid var(--gold)}
+footer .motto{color:#ffdc7b}
+#notice{display:none;margin:16px 0;padding:15px;border:1px solid var(--gold);background:#fff8df;border-radius:10px}
+@media(min-width:850px){.grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(max-width:650px){header{justify-content:center}.brand{width:100%;justify-content:center}nav{justify-content:center}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sectiongrid{grid-template-columns:1fr}.hero{padding:34px 16px}.motto{font-size:19px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">✝<br>PSSAB</div>
+    <div><strong>PSSAB</strong><small>Persekutuan Sosial &amp; Seni Budaya<br>Tanjung Uncang</small></div>
+  </div>
+  <nav>
+    <button class="navbtn" onclick="go('beranda')">⌂ Beranda</button>
+    <button class="navbtn" onclick="go('tentang')">Tentang</button>
+    <button class="navbtn" onclick="go('ibadah')">Jadwal Ibadah</button>
+    <button class="navbtn" onclick="go('anggota')">Anggota</button>
+    <button class="navbtn" onclick="go('berita')">Berita</button>
+    <button class="gold" onclick="showNotice('Login anggota/admin akan dihubungkan setelah konfigurasi Supabase.')">Login</button>
+  </nav>
+</header>
+
+<section class="hero" id="beranda">
+  <div class="logo">✝<br>PSSAB</div>
+  <h1>PSSAB</h1>
+  <p><b>Persekutuan Sosial &amp; Seni Budaya</b></p>
+  <p><b>Tanjung Uncang</b></p>
+  <div class="motto">Dos Niroha Do Sibaen Nasaut</div>
+</section>
+
+<main>
+  <div id="notice" role="status"></div>
+  <section class="grid" aria-label="Menu utama">
+    <article class="tile"><div class="symbol">♟</div><h3>Daftar Anggota</h3><p>Data anggota PSSAB</p><button class="red" onclick="showNotice('Daftar anggota perlu dihubungkan ke database Supabase.')">Buka →</button></article>
+    <article class="tile"><div class="symbol">▦</div><h3>Jadwal Ibadah</h3><p>Lihat jadwal ibadah</p><button class="red" onclick="go('ibadah')">Buka →</button></article>
+    <article class="tile"><div class="symbol">▦</div><h3>Absensi QR</h3><p>Presensi kehadiran</p><button class="red" onclick="showNotice('Pemindai QR akan diaktifkan setelah integrasi dan pengujian.')">Buka →</button></article>
+    <article class="tile"><div class="symbol">☏</div><h3>Chat</h3><p>Komunikasi anggota</p><button class="red" onclick="showNotice('Chat anggota perlu dihubungkan ke Supabase.')">Buka →</button></article>
+    <article class="tile"><div class="symbol">♙</div><h3>Profil</h3><p>Informasi akun</p><button class="red" onclick="showNotice('Profil akan tersedia setelah login diaktifkan.')">Buka →</button></article>
+    <article class="tile"><div class="symbol">▣</div><h3>Kartu Anggota</h3><p>Kartu digital dan QR</p><button class="red" onclick="showNotice('Kartu anggota memerlukan data anggota yang terverifikasi.')">Buka →</button></article>
+  </section>
+
+  <section class="sectiongrid">
+    <div>
+      <article class="panel" id="tentang">
+        <div class="panelbody">
+          <h2>Tentang PSSAB</h2>
+          <p>PSSAB (Persekutuan Sosial &amp; Seni Budaya) Tanjung Uncang adalah wadah persekutuan untuk mempererat kasih, persaudaraan, dan melestarikan budaya.</p>
+          <ul><li>✝ Beribadah bersama</li><li>♥ Mempererat persaudaraan</li><li>✺ Melestarikan seni dan budaya Batak</li><li>♥ Melayani dengan kasih</li></ul>
+        </div>
+      </article>
+      <div class="banner"><b>“Bersama dalam Iman,<br>Bersatu dalam Budaya,<br>Melayani dengan Kasih”</b><hr style="width:55%;border-color:#d99a13"><div class="motto">Dos Niroha Do Sibaen Nasaut</div></div>
+    </div>
+    <div>
+      <article class="panel" id="ibadah">
+        <h2>▦ Jadwal Ibadah</h2>
+        <div class="panelbody">
+          <b>Jadwal ibadah akan diumumkan di sini</b>
+          <p>Silakan pastikan jadwal dan lokasi terbaru melalui pengurus PSSAB.</p>
+          <button class="red" onclick="showNotice('Jadwal resmi akan dimuat setelah sumber data dikonfirmasi.')">Informasi jadwal</button>
+        </div>
+      </article>
+      <article class="panel" id="berita">
+        <h2>📣 Berita &amp; Pengumuman</h2>
+        <div class="panelbody"><p>Informasi kegiatan dan pengumuman PSSAB akan ditampilkan di bagian ini.</p></div>
+      </article>
+      <article class="panel" id="anggota">
+        <h2>Anggota PSSAB</h2>
+        <div class="panelbody"><p>Daftar anggota hanya akan ditampilkan setelah akses data dan izin Supabase dikonfigurasi dengan benar.</p><button class="red" onclick="showNotice('Fitur anggota belum terhubung ke database.')">Lihat anggota</button></div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <b style="font: bold 27px Georgia,serif">PSSAB Tanjung Uncang</b>
+  <div class="motto">Dos Niroha Do Sibaen Nasaut</div>
+  <p>Persekutuan Sosial &amp; Seni Budaya</p>
+  <small>© PSSAB Tanjung Uncang</small>
+</footer>
+<script>
+function go(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'});}
+function showNotice(message){const n=document.getElementById('notice');n.textContent=message;n.style.display='block';n.scrollIntoView({behavior:'smooth',block:'center'});}
+</script>
+</body>
+      </html>
