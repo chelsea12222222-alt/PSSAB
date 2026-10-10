@@ -28,6 +28,69 @@ main{padding:16px}.greeting{display:flex;justify-content:space-between;align-ite
 .primary{background:linear-gradient(90deg,#9d0a1b,var(--red));color:white;border:0;border-radius:12px;padding:12px 15px;font-weight:800;width:100%;margin-top:10px}.secondary{background:#fff4d9;color:var(--red);border:1px solid #f0d28d;border-radius:12px;padding:10px 14px;font-weight:700}
 .login-wrap{min-height:calc(100dvh - 70px);display:flex;flex-direction:column;justify-content:center;padding:22px;background:linear-gradient(180deg,rgba(48,2,9,.36),rgba(48,2,9,.9)),url("rumah-bolon-bg-pssab-v29.png") center/cover no-repeat;color:white}.login-wrap img{width:142px;height:142px;object-fit:contain;margin:0 auto 8px;filter:drop-shadow(0 3px 8px #000)}.login-wrap h1{text-align:center;color:var(--gold);font-family:Georgia,serif;font-size:36px;margin:0;text-shadow:0 2px 5px #000}.login-wrap .tagline{text-align:center;font-weight:700;font-size:12px;line-height:1.5;text-shadow:0 1px 4px #000;margin:6px 0 20px}.login-box{background:#fff;border:1px solid #eadfca;border-radius:20px;padding:18px;box-shadow:0 10px 28px #42050c12}.login-box label{display:block;font-size:12px;font-weight:700;margin:10px 0 5px}.login-box input{width:100%;padding:12px;border:1px solid #dce1e8;border-radius:11px}
 body.login-mode .top,body.login-mode .bottom{display:none}body.login-mode .app{padding-bottom:0}body.login-mode main{padding:0}body.login-mode .login-wrap{min-height:100dvh}\n@media(min-width:541px){body{padding:18px 0}.app{border-radius:22px;overflow:hidden;min-height:calc(100dvh - 36px)}.bottom{bottom:18px;border-radius:0 0 22px 22px}}
+/* Modernisasi dashboard PSSAB v29 */
+.tile{
+  position:relative;
+  overflow:hidden;
+  min-height:108px;
+  padding:15px 6px;
+  border:1px solid #eadfcf;
+  border-radius:18px;
+  background:rgba(255,250,240,.97);
+  box-shadow:0 5px 16px rgba(71,7,17,.10);
+  transition:transform .2s,box-shadow .2s;
+}
+.tile .ico{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(145deg,#8e1422,#570914);
+  color:#f5c451;
+  font-size:23px;
+  margin:0 auto 9px;
+  box-shadow:0 4px 9px rgba(71,7,17,.18);
+}
+.tile:nth-child(3n+2) .ico{
+  background:linear-gradient(145deg,#f5dfad,#fff3d5);
+  color:#790d18;
+}
+.tile b{font-size:12px;letter-spacing:.1px}
+.tile span:not(.ico){font-size:10px;line-height:1.4}
+.bottom{
+  background:rgba(255,252,246,.97);
+  border-top:1px solid #eadfcf;
+  box-shadow:0 -5px 22px rgba(71,7,17,.10);
+  backdrop-filter:blur(12px);
+}
+.bottom button{
+  position:relative;
+  padding:6px 0;
+  border-radius:12px;
+  font-size:10px;
+  transition:color .2s,background .2s;
+}
+.bottom button .ico{
+  font-size:22px;
+  line-height:1.3;
+  margin-bottom:4px;
+}
+.bottom button.active{
+  color:#790d18;
+  background:#f8ead0;
+  font-weight:800;
+}
+.bottom button.active::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:30%;
+  width:40%;
+  height:3px;
+  border-radius:0 0 4px 4px;
+  background:#e4a20c;
+}
 </style>
 </head>
 <body>
