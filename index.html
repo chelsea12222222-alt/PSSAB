@@ -1,127 +1,78 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#790d18">
 <title>PSSAB Tanjung Uncang — v29</title>
 <style>
-:root{--red:#710d1c;--dark:#380811;--gold:#d99a13;--cream:#fffaf0;--ink:#252a35}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:var(--ink);line-height:1.55}
-header{background:linear-gradient(110deg,var(--dark),var(--red));color:white;padding:14px max(5%,calc((100% - 1200px)/2));display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:58px;height:58px;border:3px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:#ffd66d;font-weight:bold;font-size:14px;background:#510916}
-.brand strong{font-family:Georgia,serif;font-size:27px;line-height:1.1}
-.brand small{display:block;font-size:12px}
-nav{display:flex;gap:7px;flex-wrap:wrap}
-button,.navbtn{border:0;border-radius:22px;padding:10px 15px;font-weight:bold;cursor:pointer}
-.navbtn{background:transparent;color:white}
-.gold{background:var(--gold);color:#31100b}
-.red{background:var(--red);color:white}
-.hero{padding:50px 6%;background:linear-gradient(120deg,#fff6dd,#fff 55%,#f8e5c0);text-align:center;border-bottom:5px solid var(--gold)}
-.hero .logo{width:100px;height:100px;margin:0 auto 12px;font-size:23px;border-width:5px}
-h1{font: bold clamp(38px,7vw,68px) Georgia,serif;color:var(--red);margin:8px 0}
-.hero p{font-size:18px;margin:4px}
-.motto{font:italic bold 23px Georgia,serif;color:var(--red);margin-top:20px}
-main{max-width:1200px;margin:auto;padding:22px 18px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.tile{border:1px solid #e1e1e1;border-radius:14px;padding:20px 12px;text-align:center;background:white;box-shadow:0 3px 12px #25030a0a}
-.symbol{width:54px;height:54px;margin:auto auto 8px;border-radius:50%;display:grid;place-items:center;background:var(--red);color:white;font-size:25px}
-.tile:nth-child(even) .symbol{background:var(--gold);color:#321}
-.tile h3{margin:5px 0}
-.tile p{margin:4px 0 12px;font-size:14px;color:#566171}
-.sectiongrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
-.panel{border:1px solid #e0e0e0;border-radius:14px;overflow:hidden;margin-bottom:14px}
-.panel h2{margin:0;padding:13px 17px;background:var(--red);color:white;font-size:19px}
-.panelbody{padding:18px}
-.panelbody h2{background:none;color:var(--red);padding:0}
-ul{padding-left:20px}
-li{margin:8px 0}
-.banner{background:linear-gradient(120deg,var(--dark),var(--red));color:white;padding:22px;border-radius:12px;text-align:center;margin-top:16px}
-footer{margin-top:25px;background:var(--dark);color:white;text-align:center;padding:25px 12px;border-bottom:8px solid var(--gold)}
-footer .motto{color:#ffdc7b}
-#notice{display:none;margin:16px 0;padding:15px;border:1px solid var(--gold);background:#fff8df;border-radius:10px}
-@media(min-width:850px){.grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
-@media(max-width:650px){header{justify-content:center}.brand{width:100%;justify-content:center}nav{justify-content:center}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sectiongrid{grid-template-columns:1fr}.hero{padding:34px 16px}.motto{font-size:19px}}
+:root{--red:#790d18;--deep:#470711;--gold:#e4a20c;--cream:#fff8e9;--ink:#172b45;--muted:#63748a;--line:#e6eaf0;--green:#06a86b}
+*{box-sizing:border-box}body{margin:0;background:#f5f5f3;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+button,input{font:inherit}button{cursor:pointer}.app{max-width:540px;margin:auto;min-height:100dvh;background:#fff;box-shadow:0 0 25px #00000012;padding-bottom:82px}
+.top{background:linear-gradient(135deg,var(--deep),var(--red));color:white;padding:18px 18px 22px;border-bottom:4px solid var(--gold)}
+.brand{display:flex;gap:12px;align-items:center}.brand img{width:66px;height:66px;object-fit:contain;border-radius:50%;background:#fff7e5;border:2px solid var(--gold)}.brand h1{margin:0;color:var(--gold);font-family:Georgia,serif;font-size:28px;letter-spacing:1px}.brand p{margin:3px 0 0;font-size:11px;line-height:1.4}
+.welcome{margin-top:18px;font-weight:800;font-size:19px;line-height:1.25}.motto{margin-top:7px;color:#ffd86c;font-family:Georgia,serif;font-style:italic;font-size:15px}
+main{padding:16px}.greeting{display:flex;justify-content:space-between;align-items:center;gap:10px}.greeting h2{font-size:20px;margin:0 0 4px}.sub{font-size:12px;color:var(--muted)}.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#fff0d0;color:var(--red);font-weight:800;border:2px solid var(--gold)}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px}.section-title h3{font-size:16px;margin:0;color:var(--red)}.small-link{border:0;background:none;color:var(--red);font-size:12px;font-weight:700}
+.event{border:1px solid #f0dfbc;background:linear-gradient(115deg,#fffaf0,#fff);border-radius:18px;padding:13px;display:flex;gap:12px;box-shadow:0 4px 14px #5a1a1010}.datebox{min-width:54px;height:64px;border-radius:12px;background:var(--red);color:#fff;text-align:center;display:flex;flex-direction:column;justify-content:center}.datebox strong{font-size:23px;line-height:1}.datebox span{font-size:11px}.event h4{margin:0 0 5px;font-size:14px}.event p{font-size:12px;margin:3px 0;color:#53657a}.pill{display:inline-block;background:#d9f7e8;color:#087548;border-radius:20px;padding:4px 8px;font-size:10px;font-weight:700;margin-top:4px}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.tile{min-height:96px;border:1px solid var(--line);border-radius:15px;background:white;padding:12px 5px;text-align:center;box-shadow:0 3px 12px #14213d08;color:var(--ink)}.tile .ico{margin:0 auto 8px;width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#fff0d0;color:var(--red);font-size:21px}.tile:nth-child(3n+2) .ico{background:#fbe2e4}.tile b{display:block;font-size:12px}.tile span{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+.notice{background:#fff7e5;border:1px solid #f2d38c;border-radius:13px;padding:12px;font-size:12px;line-height:1.5;color:#63430a;margin-top:16px}
+.page{display:none}.page.active{display:block}.page-heading{display:flex;align-items:center;gap:10px;margin:2px 0 16px}.back{border:0;border-radius:10px;background:#f7e8e8;color:var(--red);padding:8px 12px;font-weight:700}.page-heading h2{margin:0;font-size:20px;color:var(--red)}
+.search{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px;outline-color:var(--gold)}
+.member{display:flex;gap:11px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:9px}.person{width:43px;height:43px;border-radius:50%;background:#fbe5d8;display:grid;place-items:center;color:var(--red);font-weight:800}.member b{font-size:13px}.member small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.tag{margin-left:auto;background:#fbe5e5;color:var(--red);border-radius:20px;padding:5px 8px;font-size:10px}
+.card-id{background:linear-gradient(145deg,#4c0610,#8d0b1b);color:#fff;border:3px solid var(--gold);border-radius:20px;padding:18px;text-align:center;overflow:hidden}.card-id img{width:78px;height:78px;object-fit:contain;background:white;border-radius:50%;padding:2px}.card-id h2{color:var(--gold);font-family:Georgia,serif;font-size:27px;margin:7px 0}.card-id .qr{background:white;color:#222;width:160px;height:160px;margin:16px auto 8px;display:grid;place-items:center;border-radius:8px;padding:8px;font-size:11px}.card-id .qr img{width:100%;height:100%;border-radius:0;object-fit:contain}
+.schedule{border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:10px}.schedule h4{margin:0 0 5px;font-size:14px;color:var(--red)}.schedule p{font-size:12px;margin:4px 0;color:var(--muted)}
+.chatrow{display:flex;gap:10px;border-bottom:1px solid var(--line);padding:13px 0}.chatrow .person{flex-shrink:0}.chatrow p{margin:4px 0 0;font-size:12px;color:var(--muted)}
+.profile-logo{display:block;width:100px;height:100px;object-fit:contain;margin:8px auto}.profile-name{text-align:center;font-weight:800;font-size:19px}.profile-meta{text-align:center;color:var(--muted);font-size:12px;margin:4px 0 18px}.setting{padding:14px;border-bottom:1px solid var(--line);font-size:13px}
+.bottom{position:fixed;z-index:5;bottom:0;left:50%;transform:translateX(-50%);width:min(540px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid var(--line);padding:8px 4px max(8px,env(safe-area-inset-bottom));box-shadow:0 -4px 20px #0000000a}.bottom button{border:0;background:none;color:#66768a;font-size:10px;padding:3px 0}.bottom button .ico{display:block;font-size:20px;margin-bottom:2px}.bottom button.active{color:var(--red);font-weight:800}
+.primary{background:linear-gradient(90deg,#9d0a1b,var(--red));color:white;border:0;border-radius:12px;padding:12px 15px;font-weight:800;width:100%;margin-top:10px}.secondary{background:#fff4d9;color:var(--red);border:1px solid #f0d28d;border-radius:12px;padding:10px 14px;font-weight:700}
+.login-wrap{min-height:calc(100dvh - 70px);display:flex;flex-direction:column;justify-content:center;padding:22px;background:linear-gradient(160deg,#fff7e6,#fff 55%,#f7dfb0)}.login-wrap img{width:142px;height:142px;object-fit:contain;margin:0 auto 8px}.login-wrap h1{text-align:center;color:var(--red);font-family:Georgia,serif;font-size:36px;margin:0}.login-wrap .tagline{text-align:center;font-weight:700;margin:6px 0 20px}.login-box{background:#fff;border:1px solid #eadfca;border-radius:20px;padding:18px;box-shadow:0 10px 28px #42050c12}.login-box label{display:block;font-size:12px;font-weight:700;margin:10px 0 5px}.login-box input{width:100%;padding:12px;border:1px solid #dce1e8;border-radius:11px}
+@media(min-width:541px){body{padding:18px 0}.app{border-radius:22px;overflow:hidden;min-height:calc(100dvh - 36px)}.bottom{bottom:18px;border-radius:0 0 22px 22px}}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">
-    <div class="logo">✝<br>PSSAB</div>
-    <div><strong>PSSAB</strong><small>Persekutuan Sosial &amp; Seni Budaya<br>Tanjung Uncang</small></div>
-  </div>
-  <nav>
-    <button class="navbtn" onclick="go('beranda')">⌂ Beranda</button>
-    <button class="navbtn" onclick="go('tentang')">Tentang</button>
-    <button class="navbtn" onclick="go('ibadah')">Jadwal Ibadah</button>
-    <button class="navbtn" onclick="go('anggota')">Anggota</button>
-    <button class="navbtn" onclick="go('berita')">Berita</button>
-    <button class="gold" onclick="showNotice('Login anggota/admin akan dihubungkan setelah konfigurasi Supabase.')">Login</button>
+<div class="app">
+  <header class="top">
+    <div class="brand"><img src="pssab-logo.png" alt="Logo PSSAB"><div><h1>PSSAB</h1><p>HORAS JALA GABE PUNGUAN SITUMORANG SIPITU AMA<br>SEKTOR TANJUNG UNCANG</p></div></div>
+    <div class="welcome">Satu Hati, Satu Marga,<br>Satu Doa</div>
+    <div class="motto">“Dos Niroha Do Sibaen Nasaut”</div>
+  </header>
+  <main>
+    <section class="page active" id="home">
+      <div class="greeting"><div><h2>Horas, Anggota!</h2><div class="sub">Selamat datang di PSSAB Tanjung Uncang</div></div><div class="avatar">P</div></div>
+      <div class="section-title"><h3>Jadwal Ibadah Terdekat</h3><button class="small-link" onclick="showPage('ibadah')">Lihat semua</button></div>
+      <div class="event"><div class="datebox"><strong>—</strong><span>Jadwal</span></div><div><h4>Belum ada jadwal yang dimuat</h4><p>Jadwal akan tampil setelah data terhubung.</p><span class="pill">PSSAB Tanjung Uncang</span></div></div>
+      <div class="section-title"><h3>Menu Utama</h3></div>
+      <div class="tiles">
+        <button class="tile" onclick="showPage('anggota')"><span class="ico">♟</span><b>Anggota</b><span>Daftar anggota</span></button>
+        <button class="tile" onclick="showPage('ibadah')"><span class="ico">▦</span><b>Ibadah</b><span>Jadwal kegiatan</span></button>
+        <button class="tile" onclick="showPage('presensi')"><span class="ico">▣</span><b>Presensi QR</b><span>Kehadiran</span></button>
+        <button class="tile" onclick="showPage('chat')"><span class="ico">●</span><b>Chat</b><span>Komunikasi</span></button>
+        <button class="tile" onclick="showPage('dokumentasi')"><span class="ico">▧</span><b>Dokumentasi</b><span>Foto kegiatan</span></button>
+        <button class="tile" onclick="showPage('kartu')"><span class="ico">▤</span><b>Kartu Anggota</b><span>Kartu digital</span></button>
+      </div>
+      <div class="notice"><b>Catatan v29:</b> Ini adalah kerangka tampilan awal untuk menyesuaikan desain Android. Login, data anggota, jadwal, chat, dan QR belum terhubung ke Supabase pada paket ini.</div>
+    </section>
+    <section class="page" id="anggota"><div class="page-heading"><button class="back" onclick="showPage('home')">‹</button><h2>Daftar Anggota</h2></div><input class="search" placeholder="Cari nama atau ID anggota" oninput="filterMembers(this.value)"><div id="memberList"><div class="member"><div class="person">P</div><div><b>Data anggota belum dimuat</b><small>Hubungkan ke database untuk menampilkan daftar anggota.</small></div></div></div></section>
+    <section class="page" id="ibadah"><div class="page-heading"><button class="back" onclick="showPage('home')">‹</button><h2>Jadwal Ibadah</h2></div><div class="schedule"><h4>Jadwal akan ditampilkan di sini</h4><p>Tanggal, jam, lokasi, dan tombol peta akan diambil dari database setelah integrasi.</p></div></section>
+    <section class="page" id="presensi"><div class="page-heading"><button class="back" onclick="showPage('home')">‹</button><h2>QR Kehadiran</h2></div><div class="schedule"><h4>Presensi belum aktif</h4><p>QR kehadiran harus dibuat dan diverifikasi oleh sistem. QR identitas saja tidak boleh dianggap sebagai bukti hadir.</p></div></section>
+    <section class="page" id="chat"><div class="page-heading"><button class="back" onclick="showPage('home')">‹</button><h2>Chat PSSAB</h2></div><div class="chatrow"><div class="person">P</div><div><b>Grup PSSAB</b><p>Pesan akan tampil setelah layanan chat terhubung.</p></div></div></section>
+    <section class="page" id="dokumentasi"><div class="page-heading"><button class="back" onclick="showPage('home')">‹</button><h2>Dokumentasi</h2></div><div class="schedule"><h4>Foto kegiatan</h4><p>Foto dan keterangan akan tampil setelah penyimpanan Supabase dihubungkan.</p></div></section>
+    <section class="page" id="kartu"><div class="page-heading"><button class="back" onclick="showPage('home')">‹</button><h2>Kartu Anggota</h2></div><div class="card-id"><img src="pssab-logo.png" alt="Logo PSSAB"><h2>PSSAB</h2><b>KARTU ANGGOTA DIGITAL</b><p>Nama anggota: belum masuk</p><p>ID anggota: —</p><p>Status: belum diverifikasi</p><div class="qr">QR anggota akan dibuat setelah login dan integrasi database</div><small>Dos Niroha Do Sibaen Nasaut</small></div></section>
+    <section class="page" id="profil"><div class="page-heading"><button class="back" onclick="showPage('home')">‹</button><h2>Profil</h2></div><img class="profile-logo" src="pssab-logo.png" alt="Logo PSSAB"><div class="profile-name">Pengguna belum masuk</div><div class="profile-meta">Login dan data profil belum terhubung</div><div class="setting">♙ Informasi Pribadi</div><div class="setting">▣ Kartu Anggota</div><div class="setting">⚙ Pengaturan</div><button class="primary" onclick="showPage('login')">Masuk / Login</button></section>
+    <section class="page" id="login"><div class="login-wrap"><img src="pssab-logo.png" alt="Logo PSSAB"><h1>PSSAB</h1><div class="tagline">Persekutuan Sosial & Seni Budaya<br>Tanjung Uncang</div><div class="login-box"><label>Email atau No. HP</label><input type="text" placeholder="Masukkan email atau nomor HP"><label>Password</label><input type="password" placeholder="Masukkan password"><button class="primary" onclick="alert('Login belum terhubung. Ini masih kerangka tampilan v29.')">Masuk</button><button class="primary" style="background:#fff0d0;color:#790d18" onclick="alert('Pendaftaran belum terhubung ke Supabase.')">Daftar anggota baru</button><p class="sub">Login akan diaktifkan setelah konfigurasi Supabase diperiksa.</p></div></div></section>
+  </main>
+  <nav class="bottom" aria-label="Navigasi utama">
+    <button class="active" data-page="home" onclick="showPage('home')"><span class="ico">⌂</span>Beranda</button>
+    <button data-page="anggota" onclick="showPage('anggota')"><span class="ico">♟</span>Anggota</button>
+    <button data-page="ibadah" onclick="showPage('ibadah')"><span class="ico">▦</span>Ibadah</button>
+    <button data-page="chat" onclick="showPage('chat')"><span class="ico">●</span>Chat</button>
+    <button data-page="profil" onclick="showPage('profil')"><span class="ico">♙</span>Profil</button>
   </nav>
-</header>
-
-<section class="hero" id="beranda">
-  <div class="logo">✝<br>PSSAB</div>
-  <h1>PSSAB</h1>
-  <p><b>Persekutuan Sosial &amp; Seni Budaya</b></p>
-  <p><b>Tanjung Uncang</b></p>
-  <div class="motto">Dos Niroha Do Sibaen Nasaut</div>
-</section>
-
-<main>
-  <div id="notice" role="status"></div>
-  <section class="grid" aria-label="Menu utama">
-    <article class="tile"><div class="symbol">♟</div><h3>Daftar Anggota</h3><p>Data anggota PSSAB</p><button class="red" onclick="showNotice('Daftar anggota perlu dihubungkan ke database Supabase.')">Buka →</button></article>
-    <article class="tile"><div class="symbol">▦</div><h3>Jadwal Ibadah</h3><p>Lihat jadwal ibadah</p><button class="red" onclick="go('ibadah')">Buka →</button></article>
-    <article class="tile"><div class="symbol">▦</div><h3>Absensi QR</h3><p>Presensi kehadiran</p><button class="red" onclick="showNotice('Pemindai QR akan diaktifkan setelah integrasi dan pengujian.')">Buka →</button></article>
-    <article class="tile"><div class="symbol">☏</div><h3>Chat</h3><p>Komunikasi anggota</p><button class="red" onclick="showNotice('Chat anggota perlu dihubungkan ke Supabase.')">Buka →</button></article>
-    <article class="tile"><div class="symbol">♙</div><h3>Profil</h3><p>Informasi akun</p><button class="red" onclick="showNotice('Profil akan tersedia setelah login diaktifkan.')">Buka →</button></article>
-    <article class="tile"><div class="symbol">▣</div><h3>Kartu Anggota</h3><p>Kartu digital dan QR</p><button class="red" onclick="showNotice('Kartu anggota memerlukan data anggota yang terverifikasi.')">Buka →</button></article>
-  </section>
-
-  <section class="sectiongrid">
-    <div>
-      <article class="panel" id="tentang">
-        <div class="panelbody">
-          <h2>Tentang PSSAB</h2>
-          <p>PSSAB (Persekutuan Sosial &amp; Seni Budaya) Tanjung Uncang adalah wadah persekutuan untuk mempererat kasih, persaudaraan, dan melestarikan budaya.</p>
-          <ul><li>✝ Beribadah bersama</li><li>♥ Mempererat persaudaraan</li><li>✺ Melestarikan seni dan budaya Batak</li><li>♥ Melayani dengan kasih</li></ul>
-        </div>
-      </article>
-      <div class="banner"><b>“Bersama dalam Iman,<br>Bersatu dalam Budaya,<br>Melayani dengan Kasih”</b><hr style="width:55%;border-color:#d99a13"><div class="motto">Dos Niroha Do Sibaen Nasaut</div></div>
-    </div>
-    <div>
-      <article class="panel" id="ibadah">
-        <h2>▦ Jadwal Ibadah</h2>
-        <div class="panelbody">
-          <b>Jadwal ibadah akan diumumkan di sini</b>
-          <p>Silakan pastikan jadwal dan lokasi terbaru melalui pengurus PSSAB.</p>
-          <button class="red" onclick="showNotice('Jadwal resmi akan dimuat setelah sumber data dikonfirmasi.')">Informasi jadwal</button>
-        </div>
-      </article>
-      <article class="panel" id="berita">
-        <h2>📣 Berita &amp; Pengumuman</h2>
-        <div class="panelbody"><p>Informasi kegiatan dan pengumuman PSSAB akan ditampilkan di bagian ini.</p></div>
-      </article>
-      <article class="panel" id="anggota">
-        <h2>Anggota PSSAB</h2>
-        <div class="panelbody"><p>Daftar anggota hanya akan ditampilkan setelah akses data dan izin Supabase dikonfigurasi dengan benar.</p><button class="red" onclick="showNotice('Fitur anggota belum terhubung ke database.')">Lihat anggota</button></div>
-      </article>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <b style="font: bold 27px Georgia,serif">PSSAB Tanjung Uncang</b>
-  <div class="motto">Dos Niroha Do Sibaen Nasaut</div>
-  <p>Persekutuan Sosial &amp; Seni Budaya</p>
-  <small>© PSSAB Tanjung Uncang</small>
-</footer>
+</div>
 <script>
-function go(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'});}
-function showNotice(message){const n=document.getElementById('notice');n.textContent=message;n.style.display='block';n.scrollIntoView({behavior:'smooth',block:'center'});}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.bottom button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));window.scrollTo({top:0,behavior:'smooth'});}
+function filterMembers(value){const list=document.getElementById('memberList');if(value.trim()){list.innerHTML='<div class="member"><div class="person">?</div><div><b>Data belum tersedia</b><small>Pencarian anggota aktif setelah database dihubungkan.</small></div></div>';}else{list.innerHTML='<div class="member"><div class="person">P</div><div><b>Data anggota belum dimuat</b><small>Hubungkan ke database untuk menampilkan daftar anggota.</small></div></div>';}}
 </script>
 </body>
-      </html>
+</html>
