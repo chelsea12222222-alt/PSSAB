@@ -1,0 +1,69 @@
+{
+  "id": "./",
+  "name": "HORAS JALA GABE PUNGUAN SITUMORANG SIPITU AMA SEKTOR TANJUNG UNCANG",
+  "short_name": "PSSAB Tanjung Uncang",
+  "description": "Aplikasi online PSSAB untuk anggota, jadwal ibadah, presensi, chat, dokumentasi, profil dan ID Card.",
+  "lang": "id-ID",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
+  "background_color": "#fff7e6",
+  "theme_color": "#2b1710",
+  "orientation": "portrait",
+  "categories": [
+    "social",
+    "communication"
+  ],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Profil",
+      "short_name": "Profil",
+      "url": "./#profile",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Jadwal Ibadah",
+      "short_name": "Ibadah",
+      "url": "./#schedule",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
