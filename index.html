@@ -393,6 +393,59 @@ async function logoutDemo(){
   if(passwordField) passwordField.value = '';
   showPage('login');
 }
+
+async function loadMembersFromSupabase() {
+  const list = document.getElementById('memberList');
+  if (!list || !window.supabase || !window.PSSAB_CONFIG) return;
+
+  list.innerHTML = '<div class="member"><div><b>Memuat anggota...</b></div></div>';
+
+  try {
+    const SB = window.supabase.createClient(
+      window.PSSAB_CONFIG.SUPABASE_URL,
+      window.PSSAB_CONFIG.SUPABASE_ANON_KEY
+    );
+
+    const { data: sessionData } = await SB.auth.getSession();
+
+    if (!sessionData.session) {
+      list.innerHTML = '<div class="member"><div><b>Silakan login terlebih dahulu.</b></div></div>';
+      return;
+    }
+
+    const { data, error } = await SB
+      .from('profiles')
+      .select('id, name, active')
+      .order('name');
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      list.innerHTML = '<div class="member"><div><b>Belum ada data anggota.</b></div></div>';
+      return;
+    }
+
+    list.innerHTML = data.map(member => {
+      const name = String(member.name || 'Nama belum tersedia');
+      const initial = name.charAt(0).toUpperCase();
+      const status = member.active === false ? 'Tidak aktif' : 'Aktif';
+
+      return `
+        <div class="member">
+          <div class="person">${esc(initial)}</div>
+          <div>
+            <b>${esc(name)}</b>
+            <small>Status: ${esc(status)}</small>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+  } catch (error) {
+    console.error('Gagal memuat anggota:', error);
+    list.innerHTML = '<div class="member"><div><b>Data anggota gagal dimuat.</b><small>Periksa akses tabel profiles di Supabase.</small></div></div>';
+  }
+}
   // Periksa sesi Supabase saat halaman dibuka atau dimuat ulang
 async function checkSavedSession() {
 if (!window.supabase || !window.PSSAB_CONFIG) {
