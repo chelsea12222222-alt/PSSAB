@@ -444,9 +444,19 @@ async function loadMembersFromSupabase() {
       `;
     }).join('');
 
+  } 
   } catch (error) {
     console.error('Gagal memuat anggota:', error);
-    list.innerHTML = '<div class="member"><div><b>Data anggota gagal dimuat.</b><small>Periksa akses tabel profiles di Supabase.</small></div></div>';
+    list.innerHTML = `
+      <div class="member">
+        <div>
+          <b>Data anggota gagal dimuat.</b>
+          <small>${String(error.message || error).replace(/</g, '&lt;')}</small>
+        </div>
+      </div>
+    `;
+  }
+}
   }
 }
   // Periksa sesi Supabase saat halaman dibuka atau dimuat ulang
