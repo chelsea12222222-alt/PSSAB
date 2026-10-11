@@ -29,51 +29,91 @@ main{padding:16px}.greeting{display:flex;justify-content:space-between;align-ite
 .primary{background:linear-gradient(90deg,#9d0a1b,var(--red));color:white;border:0;border-radius:12px;padding:12px 15px;font-weight:800;width:100%;margin-top:10px}.secondary{background:#fff4d9;color:var(--red);border:1px solid #f0d28d;border-radius:12px;padding:10px 14px;font-weight:700}
 .login-wrap{min-height:calc(100dvh - 70px);display:flex;flex-direction:column;justify-content:center;padding:22px;background:linear-gradient(180deg,rgba(48,2,9,.36),rgba(48,2,9,.9)),url("rumah-bolon-bg-pssab-v29.png") center/cover no-repeat;color:white}.login-wrap img{width:142px;height:142px;object-fit:contain;margin:0 auto 8px;filter:drop-shadow(0 3px 8px #000)}.login-wrap h1{text-align:center;color:var(--gold);font-family:Georgia,serif;font-size:36px;margin:0;text-shadow:0 2px 5px #000}.login-wrap .tagline{text-align:center;font-weight:700;font-size:12px;line-height:1.5;text-shadow:0 1px 4px #000;margin:6px 0 20px}.login-box{background:#fff;border:1px solid #eadfca;border-radius:20px;padding:18px;box-shadow:0 10px 28px #42050c12}.login-box label{display:block;font-size:12px;font-weight:700;margin:10px 0 5px}.login-box input{width:100%;padding:12px;border:1px solid #dce1e8;border-radius:11px}
 body.login-mode .top,body.login-mode .bottom{display:none}body.login-mode .app{padding-bottom:0}body.login-mode main{padding:0}body.login-mode .login-wrap{min-height:100dvh}\n/* Perbaikan tampilan login di HP */
+body.login-mode .top,
 body.login-mode .bottom {
-display: none !important;
+  display: none !important;
 }
 
-body.login-mode .top {
-display: none !important;
+body.login-mode .app {
+  padding-bottom: 0 !important;
 }
 
 body.login-mode main {
-padding: 0 !important;
+  padding: 0 !important;
 }
 
 body.login-mode .login-wrap {
-min-height: 100vh;
-min-height: 100dvh;
-justify-content: center;
-padding: 24px 18px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  justify-content: center;
+  padding: 24px 18px 32px;
+  background-position: center;
+  background-size: cover;
 }
 
-body.login-mode .login-wrap > img {
-width: 100px;
-height: 100px;
-margin-bottom: 6px;
+body.login-mode .login-wrap img {
+  width: 92px;
+  height: 92px;
+  margin: 0 auto 6px;
 }
 
 body.login-mode .login-wrap h1 {
-font-size: 32px;
+  font-size: 30px;
+  margin: 0;
 }
 
 body.login-mode .login-wrap .tagline {
-font-size: 11px;
-margin-bottom: 18px;
+  font-size: 11px;
+  line-height: 1.45;
+  margin: 6px 0 18px;
 }
 
 body.login-mode .login-box {
-width: 100%;
-max-width: 440px;
-margin: 0 auto;
-padding: 16px;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 16px;
+  border-radius: 18px;
+}
+
+body.login-mode .login-box label {
+  font-size: 12px;
+  margin: 9px 0 5px;
 }
 
 body.login-mode .login-box input {
-min-height: 46px;
-font-size: 16px;
-}@media(min-width:541px){body{padding:18px 0}.app{border-radius:22px;overflow:hidden;min-height:calc(100dvh - 36px)}.bottom{bottom:18px;border-radius:0 0 22px 22px}}
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 12px;
+  font-size: 15px;
+}
+
+body.login-mode .login-box .primary {
+  min-height: 46px;
+  padding: 11px 12px;
+  font-size: 15px;
+}
+
+body.login-mode .login-box .sub {
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+@media (max-height: 700px) {
+  body.login-mode .login-wrap {
+    justify-content: flex-start;
+    padding-top: 18px;
+  }
+
+  body.login-mode .login-wrap img {
+    width: 72px;
+    height: 72px;
+  }
+
+  body.login-mode .login-wrap .tagline {
+    margin-bottom: 12px;
+  }
+}
 /* Modernisasi dashboard PSSAB v29 */
 .tile{
   position:relative;
