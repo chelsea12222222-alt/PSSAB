@@ -409,7 +409,8 @@ async function loadMembersFromSupabase() {
       window.PSSAB_CONFIG.SUPABASE_ANON_KEY
     );
 
-    const { data: sessionData } = await SB.auth.getSession();
+    const { data: sessionData, error: sessionError } = await SB.auth.getSession();
+    if (sessionError) throw sessionError;
 
     if (!sessionData.session) {
       list.innerHTML = '<div class="member"><div><b>Silakan login terlebih dahulu.</b></div></div>';
@@ -428,6 +429,14 @@ async function loadMembersFromSupabase() {
       return;
     }
 
+    const esc = value => String(value).replace(/[&<>"']/g, char => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[char]);
+
     list.innerHTML = data.map(member => {
       const name = String(member.name || 'Nama belum tersedia');
       const initial = name.charAt(0).toUpperCase();
@@ -443,6 +452,7 @@ async function loadMembersFromSupabase() {
         </div>
       `;
     }).join('');
+
   } catch (error) {
     console.error('Gagal memuat anggota:', error);
     list.innerHTML = `
@@ -453,6 +463,8 @@ async function loadMembersFromSupabase() {
         </div>
       </div>
     `;
+  }
+}
   // Periksa sesi Supabase saat halaman dibuka atau dimuat ulang
 async function checkSavedSession() {
 if (!window.supabase || !window.PSSAB_CONFIG) {
