@@ -92,6 +92,84 @@ body.login-mode .top,body.login-mode .bottom{display:none}body.login-mode .app{p
   border-radius:0 0 4px 4px;
   background:#e4a20c;
 }
+  /* Penyempurnaan desain modern v29 */
+.tile {
+position: relative;
+min-height: 112px;
+padding: 15px 6px;
+border: 1px solid #eadfcf;
+border-radius: 18px;
+background: linear-gradient(145deg, #fffdf8, #fff4df);
+box-shadow: 0 5px 16px rgba(71, 7, 17, 0.12);
+transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tile:active {
+transform: scale(0.97);
+}
+
+.tile .ico {
+width: 46px;
+height: 46px;
+margin: 0 auto 10px;
+display: grid;
+place-items: center;
+border-radius: 15px;
+background: linear-gradient(145deg, #8e1422, #570914);
+color: #f5c451;
+font-size: 24px;
+box-shadow: 0 4px 10px rgba(71, 7, 17, 0.18);
+}
+
+.tile:nth-child(3n+2) .ico {
+background: linear-gradient(145deg, #f8e8bd, #fff8e9);
+color: #790d18;
+}
+
+.tile b {
+display: block;
+font-size: 12px;
+line-height: 1.4;
+color: #470711;
+}
+
+.tile span:not(.ico) {
+font-size: 10px;
+line-height: 1.5;
+}
+
+.event,
+.schedule,
+.member {
+border-radius: 17px;
+box-shadow: 0 4px 14px rgba(71, 7, 17, 0.07);
+}
+
+.section-title h3 {
+letter-spacing: 0.2px;
+}
+
+.bottom {
+border-top: 1px solid #eadfcf;
+background: rgba(255, 252, 246, 0.98);
+box-shadow: 0 -5px 22px rgba(71, 7, 17, 0.10);
+backdrop-filter: blur(12px);
+}
+
+.bottom button {
+border-radius: 12px;
+transition: background 0.2s, color 0.2s;
+}
+
+.bottom button.active {
+background: #f8ead0;
+color: #790d18;
+font-weight: 800;
+}
+
+.notice {
+border-radius: 15px;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
