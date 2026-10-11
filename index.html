@@ -324,6 +324,9 @@ function showPage(id){
   document.querySelectorAll('.bottom button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
   document.body.classList.toggle('login-mode',id==='login');
   window.scrollTo({top:0,behavior:'smooth'});
+  if (id === 'anggota') {
+  loadMembersFromSupabase();
+  }
 }
 async function loginDemo(){
   const identity = document.getElementById('loginIdentity')?.value.trim();
