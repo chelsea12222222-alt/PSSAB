@@ -166,16 +166,74 @@ function showPage(id){
   document.body.classList.toggle('login-mode',id==='login');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function loginDemo(){
-  const identity=document.getElementById('loginIdentity').value.trim();
-  const password=document.getElementById('loginPassword').value;
-  if(!identity||!password){alert('Isi ID anggota/email/nomor HP dan password terlebih dahulu.');return;}
-  alert('Login belum terhubung ke server. Akun belum diverifikasi; tampilan demo akan masuk ke beranda.');
-  demoSignedIn=true;showPage('home');
+async function loginDemo(){
+  const identity = document.getElementById('loginIdentity')?.value.trim();
+  const password = document.getElementById('loginPassword')?.value;
+
+  if(!identity || !password){
+    alert('Isi email dan password terlebih dahulu.');
+    return;
+  }
+
+  if(!window.supabase || !window.PSSAB_CONFIG){
+    alert('Konfigurasi Supabase belum termuat. Periksa config.js.');
+    return;
+  }
+
+  try {
+    const SB = window.supabase.createClient(
+      window.PSSAB_CONFIG.SUPABASE_URL,
+      window.PSSAB_CONFIG.SUPABASE_ANON_KEY
+    );
+
+    const { data, error } = await SB.auth.signInWithPassword({
+      email: identity,
+      password: password
+    });
+
+    if(error) throw error;
+
+    const { data: profile, error: profileError } = await SB
+      .from('profiles')
+      .select('*')
+      .eq('id', data.user.id)
+      .maybeSingle();
+
+    if(profileError) throw profileError;
+
+    if(!profile || profile.active === false){
+      await SB.auth.signOut();
+      alert('Profil anggota tidak ditemukan atau akun tidak aktif.');
+      return;
+    }
+
+    demoSignedIn = true;
+    showPage('home');
+    alert('Login berhasil. Horas, ' + (profile.name || 'Anggota') + '!');
+  } catch(error) {
+    console.error('Login error:', error);
+    alert('Login gagal. Periksa email, password, dan koneksi Supabase.');
+  }
 }
-function logoutDemo(){demoSignedIn=false;document.getElementById('loginPassword').value='';showPage('login');}
-function filterMembers(value){const list=document.getElementById('memberList');if(value.trim()){list.innerHTML='<div class="member"><div class="person">?</div><div><b>Data belum tersedia</b><small>Pencarian anggota aktif setelah database dihubungkan.</small></div></div>';}else{list.innerHTML='<div class="member"><div class="person">P</div><div><b>Data anggota belum dimuat</b><small>Hubungkan ke database untuk menampilkan daftar anggota.</small></div></div>';}}
-document.body.classList.add('login-mode');
+
+async function logoutDemo(){
+  try {
+    if(window.supabase && window.PSSAB_CONFIG){
+      const SB = window.supabase.createClient(
+        window.PSSAB_CONFIG.SUPABASE_URL,
+        window.PSSAB_CONFIG.SUPABASE_ANON_KEY
+      );
+      await SB.auth.signOut();
+    }
+  } catch(error) {
+    console.error('Logout error:', error);
+  }
+
+  demoSignedIn = false;
+  const passwordField = document.getElementById('loginPassword');
+  if(passwordField) passwordField.value = '';
+  showPage('login');
+}
 </script>
 </body>
 </html>
