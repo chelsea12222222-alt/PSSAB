@@ -465,6 +465,66 @@ async function loadMembersFromSupabase() {
     `;
   }
 }
+async function loadSchedulesFromSupabase() {
+  const container = document.getElementById('scheduleList');
+  if (!container) return;
+
+  if (!window.SB) {
+    container.innerHTML = `
+      <div class="schedule">
+        <h4>Jadwal belum terhubung</h4>
+        <p>Koneksi Supabase belum tersedia.</p>
+      </div>`;
+    return;
+  }
+
+  const { data, error } = await window.SB
+    .from('schedules')
+    .select('id, title, event_date, event_time, location')
+    .order('event_date', { ascending: true });
+
+  if (error) {
+    console.error('Gagal memuat jadwal:', error);
+    container.innerHTML = `
+      <div class="schedule">
+        <h4>Jadwal gagal dimuat</h4>
+        <p>Periksa koneksi dan izin akses tabel schedules.</p>
+      </div>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    container.innerHTML = `
+      <div class="schedule">
+        <h4>Belum ada jadwal</h4>
+        <p>Jadwal kegiatan belum tersedia.</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = data.map(item => {
+    const safe = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[char]));
+
+    const date = safe(item.event_date);
+    const time = safe(item.event_time);
+    const title = safe(item.title);
+    const location = safe(item.location);
+
+    return `
+      <div class="schedule">
+        <h4>${title}</h4>
+        <p><b>Tanggal:</b> ${date}</p>
+        <p><b>Jam:</b> ${time}</p>
+        <p><b>Lokasi:</b> ${location}</p>
+      </div>`;
+  }).join('');
+}
   // Periksa sesi Supabase saat halaman dibuka atau dimuat ulang
 async function checkSavedSession() {
 if (!window.supabase || !window.PSSAB_CONFIG) {
