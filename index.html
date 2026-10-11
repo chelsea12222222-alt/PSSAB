@@ -443,7 +443,6 @@ async function loadMembersFromSupabase() {
         </div>
       `;
     }).join('');
-    
   } catch (error) {
     console.error('Gagal memuat anggota:', error);
     list.innerHTML = `
@@ -454,8 +453,6 @@ async function loadMembersFromSupabase() {
         </div>
       </div>
     `;
-  }
-}
   }
 }
   // Periksa sesi Supabase saat halaman dibuka atau dimuat ulang
