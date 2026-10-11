@@ -393,6 +393,53 @@ async function logoutDemo(){
   if(passwordField) passwordField.value = '';
   showPage('login');
 }
+  // Periksa sesi Supabase saat halaman dibuka atau dimuat ulang
+async function checkSavedSession() {
+if (!window.supabase || !window.PSSAB_CONFIG) {
+showPage('login');
+return;
+}
+
+try {
+const SB = window.supabase.createClient(
+window.PSSAB_CONFIG.SUPABASE_URL,
+window.PSSAB_CONFIG.SUPABASE_ANON_KEY
+);
+
+const { data, error } = await SB.auth.getSession();
+
+if (error) throw error;
+
+if (!data.session) {
+  demoSignedIn = false;
+  showPage('login');
+  return;
+}
+
+const { data: profile, error: profileError } = await SB
+  .from('profiles')
+  .select('*')
+  .eq('id', data.session.user.id)
+  .maybeSingle();
+
+if (profileError || !profile || profile.active === false) {
+  demoSignedIn = false;
+  await SB.auth.signOut();
+  showPage('login');
+  return;
+}
+
+demoSignedIn = true;
+showPage('home');
+
+} catch (error) {
+console.error('Pemeriksaan sesi gagal:', error);
+demoSignedIn = false;
+showPage('login');
+}
+}
+
+window.addEventListener('DOMContentLoaded', checkSavedSession);
 </script>
 </body>
 </html>
