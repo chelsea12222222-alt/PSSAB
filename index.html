@@ -546,10 +546,11 @@ return;
 }
 
 try {
-const SB = window.supabase.createClient(
-window.PSSAB_CONFIG.SUPABASE_URL,
-window.PSSAB_CONFIG.SUPABASE_ANON_KEY
+window.SB = window.supabase.createClient(
+  window.PSSAB_CONFIG.SUPABASE_URL,
+  window.PSSAB_CONFIG.SUPABASE_ANON_KEY
 );
+const SB = window.SB;
 
 const { data, error } = await SB.auth.getSession();
 
