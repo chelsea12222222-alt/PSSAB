@@ -389,9 +389,11 @@ async function loginDemo(){
       return;
     }
 
+   window.currentProfile = profile;
     demoSignedIn = true;
     showPage('home');
     alert('Login berhasil. Horas, ' + (profile.name || 'Anggota') + '!');
+    
   } catch(error) {
     console.error('Login error:', error);
     alert('Login gagal. Periksa email, password, dan koneksi Supabase.');
