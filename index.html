@@ -546,7 +546,23 @@ async function loadSchedulesFromSupabase() {
   }).join('');
 }
   // Periksa sesi Supabase saat halaman dibuka atau dimuat ulang
-async function checkSavedSession() {
+function renderMemberProfile() {
+  const profile = window.currentProfile;
+  if (!profile) return;
+
+  document.getElementById('profileName').textContent =
+    profile.name || 'Nama belum tersedia';
+
+  document.getElementById('profileId').textContent =
+    'ID anggota: ' + (profile.member_id || 'Belum tersedia');
+
+  document.getElementById('profileStatus').textContent =
+    'Status: ' + (profile.active ? 'Aktif' : 'Tidak aktif');
+
+  document.getElementById('profileCategory').textContent =
+    'Kategori: ' + (profile.bona_group_name || 'Belum ditentukan');
+}
+  async function checkSavedSession() {
 if (!window.supabase || !window.PSSAB_CONFIG) {
 showPage('login');
 return;
