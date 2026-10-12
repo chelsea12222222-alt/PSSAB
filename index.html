@@ -575,7 +575,8 @@ if (profileError || !profile || profile.active === false) {
   showPage('login');
   return;
 }
-
+  
+window.currentProfile = profile;
 demoSignedIn = true;
 showPage('home');
 
