@@ -337,8 +337,17 @@ function showPage(id) {
     loadMembersFromSupabase();
   }
 
+  
   if (id === 'ibadah') {
-    loadSchedulesFromSupabase();
+  loadSchedulesFromSupabase();
+ }
+
+  if (id === 'profil') {
+  renderMemberProfile();
+ }
+}
+
+async function loginDemo() {
   }
 }
 async function loginDemo(){
