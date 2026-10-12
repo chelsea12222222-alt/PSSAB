@@ -578,10 +578,7 @@ if (profileError || !profile || profile.active === false) {
 window.currentProfile = profile;
 demoSignedIn = true;
 showPage('home'); 
-window.currentProfile = profile;
-demoSignedIn = true;
-showPage('home');
-
+  
 } catch (error) {
 console.error('Pemeriksaan sesi gagal:', error);
 demoSignedIn = false;
